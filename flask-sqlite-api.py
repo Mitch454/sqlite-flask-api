@@ -1,5 +1,4 @@
 import sqlite3
-# import pyodbc
 from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
@@ -11,16 +10,16 @@ api = Api(app)
 db = ('chinook.db')
 
 
-def sqlJson(path_to_db, select_query):
+def sqlJson(path_to_db, query):
 # sql data to list of dicts
       try:
           conn = sqlite3.connect(path_to_db)
           conn.row_factory = sqlite3.Row
-          items = conn.execute(select_query).fetchall()
+          items = conn.execute(query).fetchall()
           unpacked = [{j: item[j] for j in item.keys()} for item in items]
           return jsonify(unpacked)
       except Exception as e:
-          print(f"Failed to execute. Query: {select_query}\n with error:\n{e}")
+          print(f"Failed to execute query: {query}\n with error:\n{e}")
           return []
       finally:
           conn.close()
@@ -48,19 +47,22 @@ class delete(Resource):
     pass
 
 
+@app.route('/', methods=['GET'])
+def home():
+    return '''<div style="padding:1rem 2rem;font-family:Sans-Serif;">
+                <h1>Test API</h1>
+                <h3">Basic API for chinook.db</h3>
+                <h4>Routes available:</h4>
+                <ul><li>http://127.0.0.1:5002/customers</li>
+                    <li>http://127.0.0.1:5002/customers/&lt;id&gt; </li>
+              </div>
+            '''
+
 
 @app.errorhandler(404)
 def not_found(e):
-    data = {'data' : 'no route found'}
+    data = {'message' : '404 no route found'}
     return jsonify(data)
-
-
-@app.route('/', methods=['GET'])
-def home():
-    return '''  <h1 style="font-family:Sans-Serif; padding:1rem 2rem;">Test API</h1>
-                <h3 style="font-family:Sans-Serif; padding:1rem 2rem;">Basic API for chinook.db</h3>'''
-
-
 
 
 api.add_resource(customers, '/customers')
