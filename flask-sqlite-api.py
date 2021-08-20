@@ -25,25 +25,44 @@ def sqlJson(path_to_db, query):
           conn.close()
 
 
+def updateCmd(path_to_db, updatestr):
+# sql data to list of dicts
+      try:
+          conn = sqlite3.connect(path_to_db)
+          conn.execute(updatestr)
+          conn.commit()
+          return jsonify({'message' : 'Success'})
+      except Exception as e:
+          print(f"Failed to execute query: {updatestr}\n with error:\n{e}")
+          return []
+      finally:
+          conn.close()
+
+
 class customers(Resource):
 # Get all jobs
     def get(self):
-        print('get all')
         return sqlJson(db, 'SELECT * from customers')
-        
 
 
 class getCustomer(Resource):
 # Get one
     def get(self, id):
-        print('get one')
         return sqlJson(db, "SELECT * from customers WHERE customerId = '{}' ".format(id) )
         
 
+
 class update(Resource):
-    pass
+# Update FirstName field of one customer
+    def put(self, id):
+        json = request.get_json()
+        newFirstName = json["FirstName"]
+        # print('Updating {} with {}'.format(id, newFirstName))
+        return updateCmd(db, "UPDATE customers SET FirstName = '{}' WHERE customerId = {};".format(newFirstName, id))
+
 
 class delete(Resource):
+# Delete one
     pass
 
 
@@ -53,8 +72,9 @@ def home():
                 <h1>Test API</h1>
                 <h3">Basic API for chinook.db</h3>
                 <h4>Routes available:</h4>
-                <ul><li>http://127.0.0.1:5002/customers</li>
-                    <li>http://127.0.0.1:5002/customers/&lt;id&gt; </li>
+                <ul><li>GET http://127.0.0.1:5002/customers</li>
+                    <li>GET http://127.0.0.1:5002/customers/&lt;id&gt; </li>
+                    <li>PUT http://127.0.0.1:5002/customers/&lt;id&gt; </li>
               </div>
             '''
 
@@ -67,7 +87,7 @@ def not_found(e):
 
 api.add_resource(customers, '/customers')
 api.add_resource(getCustomer, '/customers/<int:id>')
-
+api.add_resource(update, '/customers/<int:id>')
 
 if __name__ == '__main__':
      app.run(port='5002', use_reloader=True)
