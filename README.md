@@ -15,9 +15,13 @@ A basic sqlite3 flask API.
 ### Routes available:
 
 GET http://127.0.0.1:5002/customers
+
 GET http://127.0.0.1:5002/customers/id
+
 PUT http://127.0.0.1:5002/customers/id
+
 DELETE http://127.0.0.1:5002/customers/id
+
 
 ---
 
