@@ -25,8 +25,8 @@ def sqlJson(path_to_db, query):
           conn.close()
 
 
-def updateCmd(path_to_db, updatestr):
-# sql data to list of dicts
+def sqlCmd(path_to_db, updatestr):
+# update one
       try:
           conn = sqlite3.connect(path_to_db)
           conn.execute(updatestr)
@@ -37,6 +37,7 @@ def updateCmd(path_to_db, updatestr):
           return []
       finally:
           conn.close()
+
 
 
 class customers(Resource):
@@ -58,12 +59,14 @@ class update(Resource):
         json = request.get_json()
         newFirstName = json["FirstName"]
         # print('Updating {} with {}'.format(id, newFirstName))
-        return updateCmd(db, "UPDATE customers SET FirstName = '{}' WHERE customerId = {};".format(newFirstName, id))
+        return sqlCmd(db, "UPDATE customers SET FirstName = '{}' WHERE customerId = {};".format(newFirstName, id))
 
 
 class delete(Resource):
 # Delete one
-    pass
+    def delete(self, id):
+        print('Deleting where id ={}'.format(id))
+        return sqlCmd(db, "DELETE FROM customers WHERE customerId = {};".format(id))
 
 
 @app.route('/', methods=['GET'])
@@ -75,6 +78,7 @@ def home():
                 <ul><li>GET http://127.0.0.1:5002/customers</li>
                     <li>GET http://127.0.0.1:5002/customers/&lt;id&gt; </li>
                     <li>PUT http://127.0.0.1:5002/customers/&lt;id&gt; </li>
+                    <li>DELETE http://127.0.0.1:5002/customers/&lt;id&gt; </li>
               </div>
             '''
 
@@ -88,6 +92,7 @@ def not_found(e):
 api.add_resource(customers, '/customers')
 api.add_resource(getCustomer, '/customers/<int:id>')
 api.add_resource(update, '/customers/<int:id>')
+api.add_resource(delete, '/customers/<int:id>')
 
 if __name__ == '__main__':
      app.run(port='5002', use_reloader=True)

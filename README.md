@@ -7,16 +7,17 @@ A basic sqlite3 flask API.
 ## TODO
 - [ ] C 
 - [x] R
-- [ ] U
-- [ ] D
+- [ ] U, all fields from JSON body
+- [x] D
 
 ---
 
 ### Routes available:
 
-http://127.0.0.1:5002/customers
-http://127.0.0.1:5002/customers/id
-
+GET http://127.0.0.1:5002/customers
+GET http://127.0.0.1:5002/customers/id
+PUT http://127.0.0.1:5002/customers/id
+DELETE http://127.0.0.1:5002/customers/id
 
 ---
 
