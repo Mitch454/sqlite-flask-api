@@ -7,7 +7,7 @@ A basic sqlite3 flask API.
 ## TODO
 - [ ] C 
 - [x] R
-- [ ] U, all fields from JSON body
+- [x] U
 - [x] D
 
 ---
