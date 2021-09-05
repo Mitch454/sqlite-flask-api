@@ -41,7 +41,7 @@ def sqlCmd(path_to_db, updatestr):
 
 
 class customers(Resource):
-# Get all jobs
+# Get all
     def get(self):
         return sqlJson(db, 'SELECT * from customers')
 
@@ -60,6 +60,23 @@ class update(Resource):
         newFirstName = json["FirstName"]
         # print('Updating {} with {}'.format(id, newFirstName))
         return sqlCmd(db, "UPDATE customers SET FirstName = '{}' WHERE customerId = {};".format(newFirstName, id))
+
+
+
+class putTest(Resource):
+# Update FirstName field of one customer
+    def put(self, id):
+        json = request.get_json()
+        for fields, data in json:
+            print(fields)
+        newFirstName = json["FirstName"]
+        # print('Updating {} with {}'.format(id, newFirstName))
+        # return sqlCmd(db, "UPDATE customers SET FirstName = '{}' WHERE customerId = {};".format(newFirstName, id))
+        return fields
+
+
+
+
 
 
 class delete(Resource):
@@ -93,6 +110,7 @@ api.add_resource(customers, '/customers')
 api.add_resource(getCustomer, '/customers/<int:id>')
 api.add_resource(update, '/customers/<int:id>')
 api.add_resource(delete, '/customers/<int:id>')
+api.add_resource(putTest, '/customers/put/<int:id>')
 
 if __name__ == '__main__':
      app.run(port='5002', use_reloader=True)
