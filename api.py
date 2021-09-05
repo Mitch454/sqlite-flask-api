@@ -54,12 +54,41 @@ class getCustomer(Resource):
 
 
 class update(Resource):
-# Update FirstName field of one customer
+# Update one customer with json body
     def put(self, id):
         json = request.get_json()
-        newFirstName = json["FirstName"]
-        # print('Updating {} with {}'.format(id, newFirstName))
-        return sqlCmd(db, "UPDATE customers SET FirstName = '{}' WHERE customerId = {};".format(newFirstName, id))
+        if (type(json)) == dict:
+            Address = json["Address"]
+            City =json["City"]
+            Company = json["Company"]
+            Country = json["Country"]
+            Email = json["Email"]
+            Fax = json["Fax"]
+            FirstName = json["FirstName"]
+            LastName = json["LastName"]
+            Phone= json["Phone"]               
+            PostalCode = json["PostalCode"]     
+            State = json["State"]               
+            SupportRepId = json["SupportRepId"] 
+            # CustomerId = json["CustomerId"]
+
+            return sqlCmd(db,""" UPDATE customers 
+                                    SET Address = '{}',
+                                    City =  '{}',
+                                    Company = '{}',
+                                    Country = '{}',                                
+                                    Email = '{}',
+                                    Fax = '{}',
+                                    FirstName = '{}',
+                                    LastName = '{}',                               
+                                    Phone = '{}',
+                                    PostalCode= '{}',
+                                    State = '{}',
+                                    SupportRepId= '{}'   WHERE customerId = {};
+                                            """.format(Address,City,Company,Country,Email,Fax,FirstName,LastName,Phone,PostalCode,State,SupportRepId,id))
+        else:
+            print('Wrong data type... got', str(type(json)) )
+
 
 
 
@@ -111,6 +140,8 @@ api.add_resource(getCustomer, '/customers/<int:id>')
 api.add_resource(update, '/customers/<int:id>')
 api.add_resource(delete, '/customers/<int:id>')
 api.add_resource(putTest, '/customers/put/<int:id>')
+
+
 
 if __name__ == '__main__':
      app.run(port='5002', use_reloader=True)
